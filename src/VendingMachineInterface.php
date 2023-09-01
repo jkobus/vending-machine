@@ -37,4 +37,9 @@ interface VendingMachineInterface
      * @return array<Coin>
      */
     public function getCoinsFromCoinReturn(): array;
+
+    /**
+     * Cancel the transaction. Any coin amount that was inserted will be returned to coin return.
+     */
+    public function cancel(): void;
 }

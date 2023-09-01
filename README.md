@@ -21,7 +21,7 @@ Implemented features:
 - [x] Unsupported coins are returned in the coin return
 - [x] It is possible to buy only one product in one transaction
 - [x] It is still possible to buy products when there are no coins in the machine, it will just keep the credit for the next transaction
-- [ ] If all products are out of stock and your coins are trapped inside, you can still get them back by canceling the transaction
+- [x] If all products are out of stock and your coins are trapped inside, you can still get them back by canceling the transaction
 
 ## How to run
 

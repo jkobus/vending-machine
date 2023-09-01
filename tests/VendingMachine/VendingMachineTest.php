@@ -132,6 +132,16 @@ class VendingMachineTest extends TestCase
         $this->assertEquals('Juice', $product->getName());
     }
 
+    public function testCancelTransaction()
+    {
+        $vendingMachine = VendingMachineFactory::createWithDefaultStock();
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->cancel();
+
+        $this->assertEquals([new Coin(50), new Coin(50)], $vendingMachine->getCoinsFromCoinReturn());
+    }
+
     public function testGetProductFromPickupBoxWhenEmptyReturnsNull()
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();

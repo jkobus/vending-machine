@@ -82,6 +82,12 @@ class VendingMachine implements VendingMachineInterface
         return $this->coinReturn;
     }
 
+    public function cancel(): void
+    {
+        $this->dropCoinsInCoinReturn($this->cashBox->getChange($this->credit->getAmount()));
+        $this->credit->reset();
+    }
+
     private function findTrayWithProductId(string $productId): Tray
     {
         foreach ($this->trays as $tray) {
