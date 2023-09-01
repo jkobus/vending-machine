@@ -12,9 +12,6 @@ class CoinAcceptor
     {
     }
 
-    /**
-     * @throws \LogicException
-     */
     public function isAccepted(Coin $coin): bool
     {
         return in_array($coin->value(), self::$accepted, true);

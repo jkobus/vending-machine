@@ -6,12 +6,12 @@ class Credit
 {
     private int $amount = 0;
 
-    public function addCredit(int $amount): void
+    public function add(int $amount): void
     {
         $this->amount += $amount;
     }
 
-    public function subtractCredit(int $amount): void
+    public function subtract(int $amount): void
     {
         $this->amount -= $amount;
     }

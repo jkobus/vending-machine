@@ -51,7 +51,7 @@ class CashBox
 
             // we were not able to pick any coins to fulfill the change request
             if($coin === null) {
-                throw new \LogicException('Not enough coins');
+                throw new NotEnoughCoinsException();
             }
         }
 

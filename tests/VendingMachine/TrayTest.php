@@ -43,5 +43,8 @@ class TrayTest extends TestCase
         $tray = new Tray($product, 1);
 
         $this->assertEquals($product, $tray->getProduct());
+
+        $tray = new Tray($product, 0);
+        $this->assertEquals($product, $tray->getProduct());
     }
 }

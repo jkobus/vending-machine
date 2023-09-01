@@ -27,11 +27,6 @@ class Tray
 
     public function getProduct(): ProductInterface
     {
-        if($this->quantity === 0) {
-            throw new \RuntimeException('Product is not available');
-        }
-
-        $this->quantity--;
         return $this->product;
     }
 

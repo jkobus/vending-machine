@@ -3,6 +3,13 @@
 namespace App\Tests\VendingMachine;
 
 use App\Coin;
+use App\VendingMachine\CashBox;
+use App\VendingMachine\NotEnoughCoinsException;
+use App\VendingMachine\NotEnoughCreditException;
+use App\VendingMachine\Product;
+use App\VendingMachine\ProductIsOutOfStockException;
+use App\VendingMachine\Tray;
+use App\VendingMachine\VendingMachine;
 use App\VendingMachine\VendingMachineFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +44,7 @@ class VendingMachineTest extends TestCase
      */
     public function testSelectAndPurchaseProductOneAfterAnotherIsNotPossible()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(NotEnoughCreditException::class);
         $this->expectExceptionMessage('Not enough credit');
 
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
@@ -69,12 +76,47 @@ class VendingMachineTest extends TestCase
 
     public function testSelectAndPurchaseProductWithoutEnoughMoneyInTheMachineThrowsException()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(NotEnoughCreditException::class);
         $this->expectExceptionMessage('Not enough credit');
 
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
         $vendingMachine->selectAndPurchaseProduct('A');
+    }
+
+    public function testSelectAndPurchaseProductThatIsOutOfStockThrowsException()
+    {
+        $this->expectException(ProductIsOutOfStockException::class);
+        $this->expectExceptionMessage('Product is out of stock');
+
+        $vendingMachine = new VendingMachine(
+            cashBox: new CashBox([]),
+            trays: [new Tray(new Product('A', 'Juice', 95), 0)]
+        );
+
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->selectAndPurchaseProduct('A');
+    }
+
+    public function testSelectAndPurchaseProductDespiteThatMachineIsUnableToReturnTheChange()
+    {
+        $vendingMachine = new VendingMachine(
+            cashBox: new CashBox([]),
+            trays: [new Tray(new Product('A', 'Juice', 95), 1)]
+        );
+
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->insertCoin(new Coin(50));
+
+        try {
+            $vendingMachine->selectAndPurchaseProduct('A');
+        } catch (NotEnoughCoinsException) {
+            // ignore
+        }
+
+        $product = $vendingMachine->getProductFromPickupBox();
+        $this->assertNotNull($product);
     }
 
     public function testGetProductFromPickupBox()

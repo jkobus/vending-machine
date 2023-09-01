@@ -19,6 +19,9 @@ Implemented features:
 - [x] Accepts 6 different coin types: 50p, 20p, 10p, 5p, 2p, 1p
 - [x] When not picked up, the coins are stacked up in the coin return
 - [x] Unsupported coins are returned in the coin return
+- [x] It is possible to buy only one product in one transaction
+- [x] It is still possible to buy products when there are no coins in the machine, it will just keep the credit for the next transaction
+- [ ] If all products are out of stock and your coins are trapped inside, you can still get them back by canceling the transaction
 
 ## How to run
 
