@@ -3,7 +3,7 @@
 namespace App\VendingMachine;
 
 /**
- * Transaction can be continued after this exception, just add more coins
+ * Transaction can be continued after this exception, but the change will not be returned.
  */
 class NotEnoughCoinsException extends \LogicException implements VendingMachineException
 {
