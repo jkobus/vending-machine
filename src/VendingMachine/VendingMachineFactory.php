@@ -1,10 +1,9 @@
 <?php
 
-namespace App;
+namespace App\VendingMachine;
 
-use App\VendingMachine\CashBox;
-use App\VendingMachine\Product;
-use App\VendingMachine\Tray;
+use App\Coin;
+use App\VendingMachineInterface;
 
 class VendingMachineFactory
 {

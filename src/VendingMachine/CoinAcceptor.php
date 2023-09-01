@@ -15,10 +15,8 @@ class CoinAcceptor
     /**
      * @throws \LogicException
      */
-    public function accept(Coin $coin): void
+    public function isAccepted(Coin $coin): bool
     {
-        if(!in_array($coin->value(), self::$accepted, true)) {
-            throw new \LogicException('Invalid coin value');
-        }
+        return in_array($coin->value(), self::$accepted, true);
     }
 }

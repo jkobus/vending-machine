@@ -13,16 +13,6 @@ class CashBox
      */
     public function __construct(array $coins = [])
     {
-        // each tray holds coins of the same value
-        $this->trays = [
-            50 => [],
-            20 => [],
-            10 => [],
-            5 => [],
-            2 => [],
-            1 => [],
-        ];
-
         foreach ($coins as $coin) {
             $this->addCoin($coin);
         }
@@ -30,15 +20,12 @@ class CashBox
 
     public function addCoin(Coin $coin): void
     {
-        if(!isset($this->trays[$coin->value()])) {
-            throw new \LogicException(sprintf('This CashBox does not support that coin: %s', $coin->value()));
-        }
-
         $this->trays[$coin->value()][] = $coin;
     }
 
     public function getChange(int $amount): array
     {
+        krsort($this->trays, SORT_NUMERIC);
         $trays = array_keys($this->trays);
         $pickedCoins = [];
 

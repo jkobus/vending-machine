@@ -1,11 +1,10 @@
 <?php
 
-namespace App;
+namespace App\VendingMachine;
 
-use App\VendingMachine\CashBox;
-use App\VendingMachine\CoinAcceptor;
-use App\VendingMachine\Credit;
-use App\VendingMachine\Tray;
+use App\Coin;
+use App\ProductInterface;
+use App\VendingMachineInterface;
 use LogicException;
 use RuntimeException;
 
@@ -35,10 +34,12 @@ class VendingMachine implements VendingMachineInterface
 
     public function insertCoin(Coin $coin): void
     {
-        // @todo rather than throwing exception if coin is unknown lets just drop it in the coin return?
-        $this->coinAcceptor->accept($coin);
-        $this->cashBox->addCoin($coin);
-        $this->credit->addCredit($coin->value());
+        if($this->coinAcceptor->isAccepted($coin)) {
+            $this->cashBox->addCoin($coin);
+            $this->credit->addCredit($coin->value());
+        } else {
+            $this->dropCoinsInCoinReturn([$coin]);
+        }
     }
 
     public function selectAndPurchaseProduct(string $productId): void
@@ -63,6 +64,19 @@ class VendingMachine implements VendingMachineInterface
         $this->dropProductInPickupBox($product);
     }
 
+    public function getProductFromPickupBox(): ?ProductInterface
+    {
+        return array_pop($this->pickupBox);
+    }
+
+    /**
+     * @return array<Coin>
+     */
+    public function getCoinsFromCoinReturn(): array
+    {
+        return $this->coinReturn;
+    }
+
     private function findTrayWithProductId(string $productId): Tray
     {
         foreach ($this->trays as $tray) {
@@ -81,18 +95,5 @@ class VendingMachine implements VendingMachineInterface
     private function dropProductInPickupBox(ProductInterface $product): void
     {
         $this->pickupBox[] = $product;
-    }
-
-    public function getProductFromPickupBox(): ?ProductInterface
-    {
-        return array_pop($this->pickupBox);
-    }
-
-    /**
-     * @return array<Coin>
-     */
-    public function getCoinsFromCoinReturn(): array
-    {
-        return $this->coinReturn;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\VendingMachine;
 
 use App\Coin;
-use App\VendingMachineFactory;
+use App\VendingMachine\VendingMachineFactory;
 use PHPUnit\Framework\TestCase;
 
 class VendingMachineTest extends TestCase
@@ -53,7 +53,7 @@ class VendingMachineTest extends TestCase
      * After buying first product, all coins that are not needed for
      * change should be returned to coin return, therefore the remaining credit will be 0.
      */
-    public function testChangeStacksUpInTheCoinReturnAfterMultiplePurchasesWhenNotPickedUp()
+    public function testCoinsAreCollectedInTheCoinReturnWhenNotPickedUp()
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
@@ -67,7 +67,7 @@ class VendingMachineTest extends TestCase
         $this->assertEquals([new Coin(5), new Coin(5)], $vendingMachine->getCoinsFromCoinReturn());
     }
 
-    public function testSelectAndPurchaseProductWithoutEnoughMoneyInTheMachine()
+    public function testSelectAndPurchaseProductWithoutEnoughMoneyInTheMachineThrowsException()
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Not enough credit');
@@ -90,10 +90,19 @@ class VendingMachineTest extends TestCase
         $this->assertEquals('Juice', $product->getName());
     }
 
-    public function testGetProductFromPickupBoxWhenEmpty()
+    public function testGetProductFromPickupBoxWhenEmptyReturnsNull()
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $product = $vendingMachine->getProductFromPickupBox();
         $this->assertNull($product);
+    }
+
+    public function testCoinThatIsNotAcceptedCanBePickedUpFromCoinReturn()
+    {
+        $vendingMachine = VendingMachineFactory::createWithDefaultStock();
+        $vendingMachine->insertCoin(new Coin(100));
+
+        $coins = $vendingMachine->getCoinsFromCoinReturn();
+        $this->assertEquals([new Coin(100)], $coins);
     }
 }
