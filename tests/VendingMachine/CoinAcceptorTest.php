@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
  */
 class CoinAcceptorTest extends TestCase
 {
+    /**
+     * @return array<array{Coin, boolean}>
+     */
     public static function data(): array
     {
         return [

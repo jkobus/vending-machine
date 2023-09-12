@@ -23,6 +23,9 @@ jobs:
           php_extensions: xdebug
           args: tests --coverage-clover ./coverage.xml
 
+      - name: PHPStan
+        uses: php-actions/phpstan@v3
+
       - name: Upload to Codecov
         uses: codecov/codecov-action@v2
         with:
