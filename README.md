@@ -1,5 +1,7 @@
 # Vending Machine Coding Challenge
 
+[![codecov](https://codecov.io/github/jkobus/vending-machine/graph/badge.svg?token=8EJP9IS9HH)](https://codecov.io/github/jkobus/vending-machine)
+
 ## The challenge
 
 Design a vending machine that will take a number of coins and return change in the smallest number of coins possible. 
