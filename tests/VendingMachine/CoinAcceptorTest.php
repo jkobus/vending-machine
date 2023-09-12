@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\VendingMachine;
 
 use App\Coin;
 use App\VendingMachine\CoinAcceptor;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \App\VendingMachine\CoinAcceptor
+ */
 class CoinAcceptorTest extends TestCase
 {
     public static function data(): array
@@ -24,7 +29,7 @@ class CoinAcceptorTest extends TestCase
     /**
      * @dataProvider data
      */
-    public function testIsAccepted(Coin $coin, bool $isAccepted)
+    public function test_is_accepted(Coin $coin, bool $isAccepted): void
     {
         $coinAcceptor = new CoinAcceptor();
         $this->assertSame($isAccepted, $coinAcceptor->isAccepted($coin));

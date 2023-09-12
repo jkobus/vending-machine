@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\VendingMachine;
 
 use App\Coin;
@@ -8,14 +10,18 @@ use App\VendingMachine\NotEnoughCoinsException;
 use App\VendingMachine\NotEnoughCreditException;
 use App\VendingMachine\Product;
 use App\VendingMachine\ProductIsOutOfStockException;
+use App\VendingMachine\RuntimeException;
 use App\VendingMachine\Tray;
 use App\VendingMachine\VendingMachine;
 use App\VendingMachine\VendingMachineFactory;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \App\VendingMachine\VendingMachine
+ */
 class VendingMachineTest extends TestCase
 {
-    public function testGetCoinsFromCoinReturn()
+    public function test_get_coins_from_coin_return(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
@@ -24,7 +30,7 @@ class VendingMachineTest extends TestCase
         $this->assertEquals([new Coin(5)], $vendingMachine->getCoinsFromCoinReturn());
     }
 
-    public function testSelectAndPurchaseProduct()
+    public function test_select_and_purchase_product(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
@@ -41,8 +47,10 @@ class VendingMachineTest extends TestCase
     /**
      * After buying first product, all coins that are not needed for
      * change should be returned to coin return, therefore the remaining credit will be 0.
+     *
+     * @covers \App\VendingMachine\NotEnoughCreditException
      */
-    public function testSelectAndPurchaseProductOneAfterAnotherIsNotPossible()
+    public function test_select_and_purchase_product_one_after_another_is_not_possible(): void
     {
         $this->expectException(NotEnoughCreditException::class);
         $this->expectExceptionMessage('Not enough credit');
@@ -60,7 +68,7 @@ class VendingMachineTest extends TestCase
      * After buying first product, all coins that are not needed for
      * change should be returned to coin return, therefore the remaining credit will be 0.
      */
-    public function testCoinsAreCollectedInTheCoinReturnWhenNotPickedUp()
+    public function test_coins_are_collected_in_the_coin_return_when_not_picked_up(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
@@ -74,7 +82,10 @@ class VendingMachineTest extends TestCase
         $this->assertEquals([new Coin(5), new Coin(5)], $vendingMachine->getCoinsFromCoinReturn());
     }
 
-    public function testSelectAndPurchaseProductWithoutEnoughMoneyInTheMachineThrowsException()
+    /**
+     * @covers \App\VendingMachine\NotEnoughCreditException
+     */
+    public function test_select_and_purchase_product_without_enough_money_in_the_machine_throws_exception(): void
     {
         $this->expectException(NotEnoughCreditException::class);
         $this->expectExceptionMessage('Not enough credit');
@@ -84,7 +95,10 @@ class VendingMachineTest extends TestCase
         $vendingMachine->selectAndPurchaseProduct('A');
     }
 
-    public function testSelectAndPurchaseProductThatIsOutOfStockThrowsException()
+    /**
+     * @covers \App\VendingMachine\ProductIsOutOfStockException
+     */
+    public function test_select_and_purchase_product_that_is_out_of_stock_throws_exception(): void
     {
         $this->expectException(ProductIsOutOfStockException::class);
         $this->expectExceptionMessage('Product is out of stock');
@@ -99,7 +113,7 @@ class VendingMachineTest extends TestCase
         $vendingMachine->selectAndPurchaseProduct('A');
     }
 
-    public function testSelectAndPurchaseProductDespiteThatMachineIsUnableToReturnTheChange()
+    public function test_select_and_purchase_product_despite_that_machine_is_unable_to_return_the_change(): void
     {
         $vendingMachine = new VendingMachine(
             cashBox: new CashBox([]),
@@ -119,7 +133,7 @@ class VendingMachineTest extends TestCase
         $this->assertNotNull($product);
     }
 
-    public function testGetProductFromPickupBox()
+    public function test_get_product_from_pickup_box(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
@@ -132,7 +146,7 @@ class VendingMachineTest extends TestCase
         $this->assertEquals('Juice', $product->getName());
     }
 
-    public function testCancelTransaction()
+    public function test_cancel_transaction(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(50));
@@ -142,19 +156,37 @@ class VendingMachineTest extends TestCase
         $this->assertEquals([new Coin(50), new Coin(50)], $vendingMachine->getCoinsFromCoinReturn());
     }
 
-    public function testGetProductFromPickupBoxWhenEmptyReturnsNull()
+    public function test_get_product_from_pickup_box_when_empty_returns_null(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $product = $vendingMachine->getProductFromPickupBox();
         $this->assertNull($product);
     }
 
-    public function testCoinThatIsNotAcceptedCanBePickedUpFromCoinReturn()
+    public function test_coin_that_is_not_accepted_can_be_picked_up_from_coin_return(): void
     {
         $vendingMachine = VendingMachineFactory::createWithDefaultStock();
         $vendingMachine->insertCoin(new Coin(100));
 
         $coins = $vendingMachine->getCoinsFromCoinReturn();
         $this->assertEquals([new Coin(100)], $coins);
+    }
+
+    /**
+     * @covers \App\VendingMachine\RuntimeException
+     */
+    public function test_select_and_purchase_product_that_is_not_in_yhe_machine_throws_exception(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Product not found in any of the trays, probably bad product id');
+
+        $vendingMachine = new VendingMachine(
+            cashBox: new CashBox([]),
+            trays: [new Tray(new Product('A', 'Juice', 95), 1)]
+        );
+
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->insertCoin(new Coin(50));
+        $vendingMachine->selectAndPurchaseProduct('XYZ');
     }
 }

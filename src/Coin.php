@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
+
+use InvalidArgumentException;
 
 final class Coin
 {
@@ -10,8 +14,8 @@ final class Coin
 
     public function __construct(int $value)
     {
-        if(!in_array($value, self::$allowed, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid coin value: %s', $value));
+        if (!in_array($value, self::$allowed, true)) {
+            throw new InvalidArgumentException(sprintf('Invalid coin value: %s', $value));
         }
 
         $this->value = $value;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use App\VendingMachine\NotEnoughCoinsException;
@@ -18,10 +20,11 @@ interface VendingMachineInterface
      * All exceptions thrown by this method must implement VendingMachineException.
      *
      * @see VendingMachineException
+     *
      * @throws ProductIsOutOfStockException When product is out of stock
-     * @throws NotEnoughCreditException When there is not enough credit to purchase the product
-     * @throws NotEnoughCoinsException When there is not enough coins to give change
-     * @throws RuntimeException In case of any other unexpected error
+     * @throws NotEnoughCreditException     When there is not enough credit to purchase the product
+     * @throws NotEnoughCoinsException      When there is not enough coins to give change
+     * @throws RuntimeException             In case of any other unexpected error
      */
     public function selectAndPurchaseProduct(string $productId): void;
 

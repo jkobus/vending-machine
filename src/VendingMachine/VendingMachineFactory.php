@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\VendingMachine;
 
 use App\Coin;
@@ -24,7 +26,6 @@ class VendingMachineFactory
                 new Tray(new Product('A', 'Juice', 95), 5),
                 new Tray(new Product('B', 'Coffee', 233), 5),
                 new Tray(new Product('C', 'Tea', 126), 5),
-
             ]
         );
     }
@@ -40,9 +41,10 @@ class VendingMachineFactory
     private static function getCoins(int $value, int $quantity): array
     {
         $coins = [];
-        for ($i = 0; $i < $quantity; $i++) {
+        for ($i = 0; $i < $quantity; ++$i) {
             $coins[] = new Coin($value);
         }
+
         return $coins;
     }
 }

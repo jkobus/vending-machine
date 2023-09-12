@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\VendingMachine;
 
 use App\ProductInterface;
@@ -32,6 +34,6 @@ class Tray
 
     public function decreaseQuantity(): void
     {
-        $this->quantity--;
+        --$this->quantity;
     }
 }

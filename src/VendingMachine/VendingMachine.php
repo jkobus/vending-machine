@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\VendingMachine;
 
 use App\Coin;
@@ -40,7 +42,7 @@ class VendingMachine implements VendingMachineInterface
 
     public function insertCoin(Coin $coin): void
     {
-        if($this->coinAcceptor->isAccepted($coin)) {
+        if ($this->coinAcceptor->isAccepted($coin)) {
             $this->cashBox->addCoin($coin);
             $this->credit->add($coin->value());
         } else {
@@ -52,13 +54,13 @@ class VendingMachine implements VendingMachineInterface
     {
         $tray = $this->findTrayWithProductId($productId);
 
-        if(!$tray->hasProductInStock()) {
+        if (!$tray->hasProductInStock()) {
             throw new ProductIsOutOfStockException($tray->getProduct());
         }
 
         $product = $tray->getProduct();
 
-        if(!$this->credit->hasEnoughCredit($product->getPrice())) {
+        if (!$this->credit->hasEnoughCredit($product->getPrice())) {
             throw new NotEnoughCreditException();
         }
 

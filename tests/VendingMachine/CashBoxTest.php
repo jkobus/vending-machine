@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\VendingMachine;
 
 use App\Coin;
 use App\VendingMachine\CashBox;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \App\VendingMachine\CashBox
+ */
 class CashBoxTest extends TestCase
 {
-    public function testAddCoin()
+    public function test_add_coin(): void
     {
         $cashbox = new CashBox();
         $cashbox->addCoin(Coin::of(50));
@@ -16,7 +22,7 @@ class CashBoxTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testGetChange()
+    public function test_get_change(): void
     {
         $cashbox = new CashBox([
             Coin::of(5),
@@ -44,9 +50,12 @@ class CashBoxTest extends TestCase
         $this->assertEquals($expectedChange, $change);
     }
 
-    public function testGetChangeWhenThereAreNoCoinsInTheBoxThrowsException()
+    /**
+     * @covers \App\VendingMachine\NotEnoughCoinsException
+     */
+    public function test_get_change_when_there_are_no_coins_in_the_box_throws_exception(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Not enough coins');
         $cashbox = new CashBox();
         $cashbox->getChange(100);
