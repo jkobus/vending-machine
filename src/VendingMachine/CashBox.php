@@ -8,6 +8,9 @@ use App\Coin;
 
 class CashBox
 {
+    /**
+     * @var array<int, array<Coin>>|array{}
+     */
     private array $trays = [];
 
     /**
@@ -25,6 +28,9 @@ class CashBox
         $this->trays[$coin->value()][] = $coin;
     }
 
+    /**
+     * @return array<Coin>
+     */
     public function getChange(int $amount): array
     {
         krsort($this->trays, \SORT_NUMERIC);

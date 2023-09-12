@@ -38,6 +38,9 @@ class VendingMachineFactory
         );
     }
 
+    /**
+     * @return array<Coin>
+     */
     private static function getCoins(int $value, int $quantity): array
     {
         $coins = [];

@@ -13,8 +13,8 @@ composer-install: # Install composer deps
 fix: # Run the code fixer
 	@$(PHP_EXEC) ./vendor/bin/php-cs-fixer fix --allow-risky yes
 
-#phpstan:
-#	@$(PHP_EXEC) ./vendor/bin/phpstan analyze --memory-limit=1G
+phpstan: # Run phpstan
+	@$(PHP_EXEC) ./vendor/bin/phpstan analyze --memory-limit=1G
 
 test: # Run tests
 	@$(PHP_EXEC) ./vendor/bin/phpunit

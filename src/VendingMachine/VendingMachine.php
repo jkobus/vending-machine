@@ -55,7 +55,7 @@ class VendingMachine implements VendingMachineInterface
         $tray = $this->findTrayWithProductId($productId);
 
         if (!$tray->hasProductInStock()) {
-            throw new ProductIsOutOfStockException($tray->getProduct());
+            throw new ProductIsOutOfStockException();
         }
 
         $product = $tray->getProduct();
@@ -102,6 +102,9 @@ class VendingMachine implements VendingMachineInterface
         throw new RuntimeException('Product not found in any of the trays, probably bad product id');
     }
 
+    /**
+     * @param array<Coin> $coins
+     */
     private function dropCoinsInCoinReturn(array $coins): void
     {
         $this->coinReturn = array_merge($this->coinReturn, $coins);
